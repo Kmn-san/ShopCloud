@@ -31,18 +31,12 @@ app.use("/api/analytics",analyticsRoutes)
 
 
 if (process.env.NODE_ENV === "production") {
-    // 1a. Define the staticPath variable so it can be reused below.
+
     const staticPath = path.join(__dirname, "frontend", "dist");
 
-    // 1b. Use express.static to serve all assets (JS, CSS, images, etc.).
     app.use(express.static(staticPath));
 
-    // --- 2. Catch-All Client-Side Routing Fallback (The FIX) ---
-    // app.use('*') is a more robust way to define a final fall-through 
-    // catch-all route that works reliably when app.get('*') fails 
-    // due to strict path parsing issues.
-    app.use('*', (req, res) => {
-        // Send the index.html file for client-side routing to take over.
+    app.use((req, res) => {
         res.sendFile(path.resolve(staticPath, "index.html"));
     });
 }
